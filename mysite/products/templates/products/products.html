@@ -1,0 +1,65 @@
+{% extends "products/base.html" %}
+{% block content %}
+
+<form method="GET">
+    <input type="text" name="search" placeholder="جستجوی محصول">
+    <button type="submit">جستجو</button>
+</form>
+<div>
+    {% for category in categories %}
+    <a href="?category={{ category.id }}&search={{ request.GET.search }}">
+    {{ category.name }}
+    </a>
+    {% endfor %}
+</div>
+{% for p in products %}
+
+    <p>
+        <form method="POST" action="{% url 'delete_product' p.id %}">
+            {% csrf_token %}
+            <button type="submit">حذف</button>
+        </form>
+
+        <a href="{% url 'product_detail' p.id %}">
+            {{ p.name }}
+        </a>
+
+        - {{ p.price }}
+        - {{ p.category }}
+
+        <a href="{% url 'add_to_cart' p.id %}">
+            افزودن به سبد خرید 🛒
+        </a>
+    </p>
+
+    {% if p.image %}
+        <img src="{{ p.image.url }}" width="200">
+    {% endif %}
+
+{% endfor %}
+<div>
+
+    {% if products.has_previous %}
+        <a href="?page={{ products.previous_page_number }}">
+            صفحه قبل
+        </a>
+    {% endif %}
+
+    <span>
+        صفحه {{ products.number }}
+        از {{ products.paginator.num_pages }}
+    </span>
+
+    {% if products.has_next %}
+        <a href="?page={{ products.next_page_number }}">
+            صفحه بعد
+        </a>
+    {% endif %}
+
+</div>
+
+<a href="{% url 'cart' %}">
+    🛒 سبد خرید
+</a>
+
+{% endblock %}

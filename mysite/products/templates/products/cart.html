@@ -1,0 +1,35 @@
+{% extends "products/base.html" %}
+
+{% block content %}
+
+<h1>سبد خرید</h1>
+
+{% for item in items %}
+
+    <p>
+        {{ item.product.name }}
+        - {{ item.product.price }}
+        - تعداد: {{ item.quantity }}
+        <a href="{% url 'increase_cart' item.id %}">
+    +
+</a>
+    <a href="{% url 'decrease_cart' item.id %}">
+    −
+</a>
+    </p>
+
+    <form method="POST" action="{% url 'remove_from_cart' item.id %}">
+        {% csrf_token %}
+        <button type="submit">حذف از سبد خرید</button>
+    </form>
+
+{% empty %}
+
+    <p>سبد خرید خالی است.</p>
+
+{% endfor %}
+
+
+<h3>جمع کل: {{ total }}</h3>
+
+{% endblock %}
